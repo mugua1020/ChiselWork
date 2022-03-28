@@ -41,3 +41,5 @@ object Try1TestGen extends App {
 }
 
 //test:runMain mytry.Try1TestGen -td ./generated/addertest --is-verbose
+
+//have a try
