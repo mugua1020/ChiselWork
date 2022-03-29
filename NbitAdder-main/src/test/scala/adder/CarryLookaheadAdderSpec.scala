@@ -22,3 +22,6 @@ class CarryLookaheadAdderSpec extends AnyFreeSpec with ChiselScalatestTester {
     }
   }
 }
+
+
+//testOnly adder.CarryLookaheadAdderSpec

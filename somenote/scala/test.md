@@ -7,6 +7,7 @@
 ### 三级标题
 
 每写完一个段落都要隔一个空行。
+然后按照先后顺序按下快捷键 Ctrl + K, V, 然后在右边就会出现预览窗口.
 
 [来源](https://orangex4.cool/post/notes-in-markdown/)
 
