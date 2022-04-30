@@ -1,0 +1,21 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/c910-bpu_2.13-0.1.0.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common/gated_clk_cell.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common/gated_clk_cell.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common/gated_clk_cell$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common/gated_clk_cell$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common/l0btb$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common/l0btb$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common/l0btb.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common/l0btb.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	common/l0btb$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/common/l0btb$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	bpu[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/bpu[0m
+[0m[[0m[0mdebug[0m] [0m[0m	bpu/ct_ifu_l0_btb_entry.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/bpu/ct_ifu_l0_btb_entry.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	bpu/ct_ifu_l0_btb_entry_io.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes/bpu/ct_ifu_l0_btb_entry_io.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

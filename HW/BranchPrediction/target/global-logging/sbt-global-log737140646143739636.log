@@ -1,0 +1,14 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(run, None, None)[0m
+[0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / run[0m
+[0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes ...[0m
+[0m[[0m[31merror[0m] [0m[0m/home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/src/main/scala/bpu/ct_ifu_l0_btb_entry.scala:6:8: not found: object c910[0m
+[0m[[0m[31merror[0m] [0m[0mimport c910.common._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/src/main/scala/bpu/ct_ifu_l0_btb_entry.scala:35:29: not found: type gated_clk_cell[0m
+[0m[[0m[31merror[0m] [0m[0m  val gatedclk = Module(new gated_clk_cell())[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[31merror[0m] [0m[0m(Compile / [31mcompileIncremental[0m) Compilation failed[0m
+[0m[[0m[31merror[0m] [0m[0mTotal time: 0 s, completed Apr 30, 2022 10:32:58 AM[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(idea-shell, None, None)[0m

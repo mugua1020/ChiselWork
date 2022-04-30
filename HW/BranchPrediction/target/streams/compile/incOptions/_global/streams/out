@@ -1,0 +1,12 @@
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	l0btb.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ct_ifu_l0_btb_entry_io.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	l0btb$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	gated_clk_cell$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ct_ifu_l0_btb_entry.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	l0btb$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	gated_clk_cell.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/zhou/Documents/ChiselWork/ChiselWork/HW/BranchPrediction/target/scala-2.13/classes.bak[0m
