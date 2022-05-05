@@ -28,7 +28,7 @@ class ct_ifu_l0_btb_entry_io extends Bundle {
   val entry_way_pred      = Output(UInt(2.W))
 }
 
-class ct_ifu_l0_btb_entry extends Module {
+class ct_ifu_l0_btb_entry extends RawModule {
   val io = IO(new ct_ifu_l0_btb_entry_io)
 
   // Gated Clock

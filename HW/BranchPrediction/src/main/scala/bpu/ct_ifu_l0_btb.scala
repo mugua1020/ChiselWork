@@ -58,7 +58,7 @@ val l0_btb_ipctrl_st_wait        = Output(Bool())
 
 
 class ct_ifu_l0_btb extends RawModule{
-    val io = IO(new ct_ifu_l0_btb_io)
+  val io = IO(new ct_ifu_l0_btb_io)
   val PC_WIDTH = 40
   val IDLE = 1.U(2.W)
   val WAIT = 2.U(2.W)
@@ -76,11 +76,11 @@ val l0_btb_rd           = io.cp0_ifu_btb_en &&
                               || !io.ifctrl_l0_btb_stall)
 
 val l0_btb_rd_tag = io.pcgen_l0_btb_chgflw_pc
-val l0_btb_rd_flop = Reg(UInt(1.W))
+val l0_btb_rd_flop = Wire(UInt(1.W))
 withClockAndReset(io.forever_cpuclk.asClock,(!io.cpurst_b).asAsyncReset){
-    //val l0_btb_rd_flop = Reg(UInt(1.W))
-    l0_btb_rd_flop := RegNext(l0_btb_rd,0.U)
-
+    //val l0_btb_rd_flop = Wire(UInt(1.W))
+    val l0_btb_rd_flop_temp = RegNext(l0_btb_rd,0.U)
+    l0_btb_rd_flop := l0_btb_rd_flop_temp
 
 }
 
@@ -111,16 +111,17 @@ entry_bypass_hit.zipWithIndex.foreach(x => {x._1 := bypass_rd_hit && io.ibdp_l0_
 //how can i do it?
 
 
-  val entry_hit_flop = Reg(UInt(16.W))
+  val entry_hit_flop = Wire(UInt(16.W))
 withClockAndReset(io.forever_cpuclk.asClock, (!io.cpurst_b).asAsyncReset){
-     entry_hit_flop := RegInit(0.U)
+    val entry_hit_flop_temp = RegInit(0.U)
     when(l0_btb_rd){
-        entry_hit_flop := entry_hit.asUInt //ok?
+        entry_hit_flop_temp := entry_hit.asUInt //ok?
     }.elsewhen(l0_btb_rd_flop.asBool & !io.ifctrl_l0_btb_stall){
-        entry_hit_flop := entry_hit.asUInt //why? forwhat?
+        entry_hit_flop_temp := entry_hit.asUInt //why? forwhat?
     }.otherwise{
-        entry_hit_flop := entry_hit_flop // if need?
+        entry_hit_flop_temp := entry_hit_flop_temp // if need?
     }
+    entry_hit_flop := entry_hit_flop_temp
 }
 
 val x_l0_btb_pipe_clk = Module(new gated_clk_cell())
@@ -138,14 +139,15 @@ val l0_btb_ras_pc = Wire(UInt((40-1).W))
 l0_btb_ras_pc := MuxCase(io.ras_l0_btb_pc,Array(io.ras_l0_btb_ras_push -> io.ras_l0_btb_push_pc,
   io.ipdp_l0_btb_ras_push -> io.ipdp_l0_btb_ras_pc))
 
- val ras_pc = Reg(UInt((PC_WIDTH-1).W))
+ val ras_pc = Wire(UInt((PC_WIDTH-1).W))
   withClockAndReset(l0_btb_pipe_clk,(!io.cpurst_b).asAsyncReset)
   {
-    ras_pc := RegInit(0.U)
+    val ras_pc_temp = RegInit(0.U)
+    ras_pc := ras_pc_temp
     when(l0_btb_rd || l0_btb_rd_flop.asBool){
-      ras_pc := l0_btb_ras_pc
+      ras_pc_temp := l0_btb_ras_pc
     }otherwise{
-      ras_pc := ras_pc
+      ras_pc_temp := ras_pc_temp
     }
   }
 
@@ -197,10 +199,11 @@ entry_hit_target :=   Mux(entry_hit_ras,ras_pc,Cat(io.pcgen_l0_btb_if_pc(38,20),
   x_l0_btb_clk.io.module_en   := io.cp0_ifu_icg_en
   x_l0_btb_clk.io.pad_yy_icg_scan_en := io.pad_yy_icg_scan_en
 
-  val l0_btb_cur_state = Reg(UInt(2.W))
-  val l0_btb_next_state = Reg(UInt(2.W))
+  val l0_btb_cur_state = Wire(UInt(2.W))
+  val l0_btb_next_state = Wire(UInt(2.W))
   withClockAndReset(l0_btb_clk,(!io.cpurst_b).asAsyncReset){
-    l0_btb_cur_state := RegNext(l0_btb_next_state,IDLE)
+    val l0_btb_cur_state_temp = RegNext(l0_btb_next_state,IDLE)
+    l0_btb_cur_state := l0_btb_cur_state_temp
   }
 
   when(l0_btb_cur_state === IDLE){
@@ -208,6 +211,8 @@ entry_hit_target :=   Mux(entry_hit_ras,ras_pc,Cat(io.pcgen_l0_btb_if_pc(38,20),
   }.elsewhen(l0_btb_cur_state === WAIT){
     l0_btb_next_state := MuxCase(IDLE,Array(io.pcgen_l0_btb_chgflw_mask -> IDLE,io.ipctrl_l0_btb_chgflw_vld -> WAIT,
       io.ipctrl_l0_btb_wait_next -> WAIT,!io.ipctrl_l0_btb_ip_vld ->WAIT))
+  }.otherwise{
+    l0_btb_next_state := IDLE
   }
 
   io.l0_btb_ipctrl_st_wait := (l0_btb_cur_state === WAIT)
@@ -226,14 +231,14 @@ entry_hit_target :=   Mux(entry_hit_ras,ras_pc,Cat(io.pcgen_l0_btb_if_pc(38,20),
   x_l0_btb_create_clk.io.module_en   := io.cp0_ifu_icg_en
   x_l0_btb_create_clk.io.pad_yy_icg_scan_en := io.pad_yy_icg_scan_en
 
-  val entry_fifo = Reg(UInt(16.W))
+  val entry_fifo = Wire(UInt(16.W))
 withClockAndReset(l0_btb_create_clk,(!io.cpurst_b).asAsyncReset){
-  entry_fifo := RegInit(1.U)
-
+  val entry_fifo_temp = RegInit(1.U)
+  entry_fifo := entry_fifo_temp
   when(l0_btb_create_en){
-    entry_fifo := Cat(entry_fifo(14,0),entry_fifo(15))
+    entry_fifo_temp := Cat(entry_fifo_temp(14,0),entry_fifo_temp(15))
   }.otherwise{
-    entry_fifo := entry_fifo
+    entry_fifo_temp := entry_fifo_temp
   }
 }
 
@@ -251,10 +256,10 @@ withClockAndReset(l0_btb_create_clk,(!io.cpurst_b).asAsyncReset){
   )
 
   val l0_btb_wen = Wire(UInt(4.W))
-  //val l0_btb_update_vld_bit     = Reg(UInt(1.W))
+  //val l0_btb_update_vld_bit     = Wire(UInt(1.W))
   val l0_btb_update_cnt_bit     = Wire(UInt(1.W))
   val l0_btb_update_ras_bit     = Wire(UInt(1.W))
-  //val l0_btb_update_data        = Reg(UInt(37.W))
+  //val l0_btb_update_data        = Wire(UInt(37.W))
 
   when(io.addrgen_l0_btb_update_vld === 1.U){
 
@@ -284,7 +289,7 @@ withClockAndReset(l0_btb_create_clk,(!io.cpurst_b).asAsyncReset){
   val x_l0_btb_inv_reg_upd_clk = Module(new gated_clk_cell())
   val l0_btb_inv_reg_upd_clk = x_l0_btb_inv_reg_upd_clk.io.clk_out
 
-  val l0_btb_entry_inv = Reg(UInt(1.W))
+  val l0_btb_entry_inv = Wire(UInt(1.W))
   val l0_btb_inv_reg_upd_clk_en =l0_btb_entry_inv | io.ifctrl_l0_btb_inv
   x_l0_btb_inv_reg_upd_clk.io.clk_in      := io.forever_cpuclk.asClock
   x_l0_btb_inv_reg_upd_clk.io.external_en := false.B
@@ -294,13 +299,14 @@ withClockAndReset(l0_btb_create_clk,(!io.cpurst_b).asAsyncReset){
   x_l0_btb_inv_reg_upd_clk.io.pad_yy_icg_scan_en := io.pad_yy_icg_scan_en
 
   withClockAndReset(l0_btb_inv_reg_upd_clk,(!io.cpurst_b).asAsyncReset){
-    l0_btb_entry_inv := RegInit(0.U)
-    when(l0_btb_entry_inv.asBool){
-      l0_btb_entry_inv := 0.U
+    val l0_btb_entry_inv_temp = RegInit(UInt(1.W),0.U)
+    l0_btb_entry_inv := l0_btb_entry_inv_temp
+    when(l0_btb_entry_inv_temp.asBool){
+      l0_btb_entry_inv_temp := 0.U
     }.elsewhen(io.ifctrl_l0_btb_inv){
-      l0_btb_entry_inv := 1.U
+      l0_btb_entry_inv_temp := 1.U
     }.otherwise{
-      l0_btb_entry_inv := l0_btb_entry_inv
+      l0_btb_entry_inv_temp := l0_btb_entry_inv_temp
     }
   }
 
