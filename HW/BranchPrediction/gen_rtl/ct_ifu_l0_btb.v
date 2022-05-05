@@ -556,7 +556,7 @@ module ct_ifu_l0_btb(
   wire  _l0_btb_rd_T_4 = io_pcgen_l0_btb_chgflw_vld | ~io_ifctrl_l0_btb_stall; // @[ct_ifu_l0_btb.scala 76:31]
   wire  l0_btb_rd = _l0_btb_rd_T_2 & _l0_btb_rd_T_4; // @[ct_ifu_l0_btb.scala 74:59]
   reg  l0_btb_rd_flop; // @[ct_ifu_l0_btb.scala 79:25]
-  wire  _T_1 = ~io_cpurst_b; // @[ct_ifu_l0_btb.scala 80:46]
+  wire  _T_2 = ~io_cpurst_b; // @[ct_ifu_l0_btb.scala 80:60]
   reg  l0_btb_rd_flop_REG; // @[ct_ifu_l0_btb.scala 82:30]
   wire [14:0] entry_tag_0 = ct_ifu_l0_btb_entry_io_entry_tag; // @[ct_ifu_l0_btb.scala 320:18 90:23]
   wire  entry_vld_0 = ct_ifu_l0_btb_entry_io_entry_vld; // @[ct_ifu_l0_btb.scala 333:18 91:25]
@@ -2043,15 +2043,15 @@ module ct_ifu_l0_btb(
       l0_btb_entry_inv <= _GEN_16;
     end
   end
-  always @(posedge io_forever_cpuclk) begin
-    if (_T_1) begin // @[ct_ifu_l0_btb.scala 82:30]
-      l0_btb_rd_flop_REG <= 1'h0; // @[ct_ifu_l0_btb.scala 82:30]
+  always @(posedge io_forever_cpuclk or posedge _T_2) begin
+    if (_T_2) begin // @[ct_ifu_l0_btb.scala 74:59]
+      l0_btb_rd_flop_REG <= 1'h0;
     end else begin
-      l0_btb_rd_flop_REG <= l0_btb_rd; // @[ct_ifu_l0_btb.scala 82:30]
+      l0_btb_rd_flop_REG <= _l0_btb_rd_T_2 & _l0_btb_rd_T_4;
     end
   end
-  always @(posedge x_l0_btb_clk_clk_out) begin
-    if (_T_1) begin // @[ct_ifu_l0_btb.scala 203:32]
+  always @(posedge x_l0_btb_clk_clk_out or posedge _T_2) begin
+    if (_T_2) begin // @[ct_ifu_l0_btb.scala 203:32]
       l0_btb_cur_state_REG <= 2'h1; // @[ct_ifu_l0_btb.scala 203:32]
     end else begin
       l0_btb_cur_state_REG <= l0_btb_next_state; // @[ct_ifu_l0_btb.scala 203:32]
@@ -2122,6 +2122,12 @@ initial begin
   _RAND_13 = {1{`RANDOM}};
   l0_btb_entry_inv = _RAND_13[0:0];
 `endif // RANDOMIZE_REG_INIT
+  if (_T_2) begin
+    l0_btb_rd_flop_REG = 1'h0;
+  end
+  if (_T_2) begin
+    l0_btb_cur_state_REG = 2'h1;
+  end
   `endif // RANDOMIZE
 end // initial
 `ifdef FIRRTL_AFTER_INITIAL
