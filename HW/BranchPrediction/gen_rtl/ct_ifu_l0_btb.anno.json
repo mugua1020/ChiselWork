@@ -2,25 +2,25 @@
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~ct_ifu_l0_btb|gated_clk_cell",
-    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/x_l0_btb_pipe_clk:gated_clk_cell",
+    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/l0_btb_pipe_clk__gated_clk_cell:gated_clk_cell",
     "index":0.0
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~ct_ifu_l0_btb|gated_clk_cell_1",
-    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/x_l0_btb_clk:gated_clk_cell",
+    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/l0_btb_clk__gated_clk_cell:gated_clk_cell",
     "index":0.027777777777777776
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~ct_ifu_l0_btb|gated_clk_cell_2",
-    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/x_l0_btb_create_clk:gated_clk_cell",
+    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/l0_btb_create_clk__gated_clk_cell:gated_clk_cell",
     "index":0.05555555555555555
   },
   {
     "class":"firrtl.transforms.DedupedResult",
     "original":"~ct_ifu_l0_btb|gated_clk_cell_3",
-    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/x_l0_btb_inv_reg_upd_clk:gated_clk_cell",
+    "duplicate":"~ct_ifu_l0_btb|ct_ifu_l0_btb/l0_btb_inv_reg_upd_clk__gated_clk_cell:gated_clk_cell",
     "index":0.08333333333333333
   },
   {
