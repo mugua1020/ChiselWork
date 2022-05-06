@@ -257,8 +257,7 @@ l0_btb_update_entry.zip(io.addrgen_l0_btb_update_entry.asBools).zip(
   //==========================================================
   //                 Instance ENTRY_SIZE Entry
   //==========================================================
-  val l0_btb_entry = Array.fill(ENTRY_SIZE)(Module(new ct_ifu_l0_btb_entry(
-    PC_WIDTH=PC_WIDTH,ENTRY_SIZE=ENTRY_SIZE,ENTRY_TARGET = ENTRY_TARGET)).io)
+  val l0_btb_entry = Array.fill(ENTRY_SIZE)(Module(new ct_ifu_l0_btb_entry).io)
   for(i <- 0 until ENTRY_SIZE){
     l0_btb_entry(i).cp0_ifu_btb_en := io.cp0_ifu_btb_en
     l0_btb_entry(i).cp0_ifu_icg_en := io.cp0_ifu_icg_en
@@ -282,7 +281,7 @@ l0_btb_update_entry.zip(io.addrgen_l0_btb_update_entry.asBools).zip(
     entry_way_pred_1(i):=l0_btb_entry(i).entry_way_pred(0)
     entry_way_pred_2(i):=l0_btb_entry(i).entry_way_pred(1)
     l0_btb_entry(i).entry_wen := l0_btb_wen
-    l0_btb_entry(i).forever_cpuclk := io.forever_cpuclk
+    l0_btb_entry(i).forever_cpuclk := io.forever_cpuclk.asClock
     l0_btb_entry(i).pad_yy_icg_scan_en := io.pad_yy_icg_scan_en
 
   }

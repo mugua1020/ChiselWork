@@ -39,1093 +39,373 @@ circuit ct_ifu_l0_btb :
     output clk_out : Clock
     defname = gated_clk_cell
 
-  extmodule gated_clk_cell_4 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_4 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_5 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_1 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_1 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_5 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_6 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_2 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_2 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_6 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_7 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_3 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_3 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_7 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_8 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_4 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_4 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_8 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_9 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_5 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_5 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_9 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_10 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_6 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_6 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_10 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_11 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_7 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_7 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_11 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_12 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_8 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_8 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_12 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_13 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_9 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_9 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_13 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_14 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_10 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_10 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_14 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_15 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_11 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_11 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_15 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_16 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_12 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_12 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_16 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_17 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_13 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_13 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_17 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_18 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_14 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
-  module ct_ifu_l0_btb_entry_14 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_18 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
-
-  extmodule gated_clk_cell_19 :
-    input clk_in : Clock
-    input global_en : UInt<1>
-    input module_en : UInt<1>
-    input local_en : UInt<1>
-    input external_en : UInt<1>
+  extmodule ct_ifu_l0_btb_entry_15 :
+    input cp0_ifu_btb_en : UInt<1>
+    input cp0_ifu_icg_en : UInt<1>
+    input cp0_ifu_l0btb_en : UInt<1>
+    input cp0_yy_clk_en : UInt<1>
+    input cpurst_b : UInt<1>
+    input entry_inv : UInt<1>
+    input entry_update : UInt<1>
+    input entry_update_cnt : UInt<1>
+    input entry_update_data : UInt<37>
+    input entry_update_ras : UInt<1>
+    input entry_update_vld : UInt<1>
+    input entry_wen : UInt<4>
+    input forever_cpuclk : Clock
     input pad_yy_icg_scan_en : UInt<1>
-    output clk_out : Clock
-    defname = gated_clk_cell
-
-  module ct_ifu_l0_btb_entry_15 :
-    output io : { flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip entry_inv : UInt<1>, flip entry_update : UInt<1>, flip entry_update_cnt : UInt<1>, flip entry_update_data : UInt<37>, flip entry_update_ras : UInt<1>, flip entry_update_vld : UInt<1>, flip entry_wen : UInt<4>, flip pad_yy_icg_scan_en : UInt<1>, entry_cnt : UInt<1>, entry_ras : UInt<1>, entry_tag : UInt<15>, entry_target : UInt<20>, entry_vld : UInt<1>, entry_way_pred : UInt<2>}
-
-    inst gatedclk of gated_clk_cell_19 @[ct_ifu_l0_btb_entry.scala 36:24]
-    gatedclk.clk_out is invalid
-    gatedclk.pad_yy_icg_scan_en is invalid
-    gatedclk.external_en is invalid
-    gatedclk.local_en is invalid
-    gatedclk.module_en is invalid
-    gatedclk.global_en is invalid
-    gatedclk.clk_in is invalid
-    node _entry_update_en_T = and(io.entry_update, io.cp0_ifu_btb_en) @[ct_ifu_l0_btb_entry.scala 38:41]
-    node entry_clk_en = and(_entry_update_en_T, io.cp0_ifu_l0btb_en) @[ct_ifu_l0_btb_entry.scala 38:61]
-    node _gatedclk_io_clk_in_T = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb_entry.scala 40:48]
-    gatedclk.clk_in <= _gatedclk_io_clk_in_T @[ct_ifu_l0_btb_entry.scala 40:27]
-    gatedclk.external_en <= UInt<1>("h0") @[ct_ifu_l0_btb_entry.scala 41:27]
-    gatedclk.global_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb_entry.scala 42:27]
-    gatedclk.local_en <= entry_clk_en @[ct_ifu_l0_btb_entry.scala 43:27]
-    gatedclk.module_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb_entry.scala 44:27]
-    gatedclk.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb_entry.scala 45:34]
-    node _T = eq(io.cpurst_b, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 47:33]
-    node _T_1 = asAsyncReset(_T) @[ct_ifu_l0_btb_entry.scala 47:47]
-    wire entry_data : UInt<37> @[ct_ifu_l0_btb_entry.scala 49:30]
-    node _io_entry_tag_T = bits(entry_data, 36, 22) @[ct_ifu_l0_btb_entry.scala 50:36]
-    io.entry_tag <= _io_entry_tag_T @[ct_ifu_l0_btb_entry.scala 50:23]
-    node _io_entry_way_pred_T = bits(entry_data, 21, 20) @[ct_ifu_l0_btb_entry.scala 51:36]
-    io.entry_way_pred <= _io_entry_way_pred_T @[ct_ifu_l0_btb_entry.scala 51:23]
-    node _io_entry_target_T = bits(entry_data, 19, 0) @[ct_ifu_l0_btb_entry.scala 52:36]
-    io.entry_target <= _io_entry_target_T @[ct_ifu_l0_btb_entry.scala 52:23]
-    reg entry_signal : UInt, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_2 = bits(io.entry_wen, 0, 0) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_3 = and(entry_clk_en, _T_2) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_3 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal <= io.entry_update_data @[ct_ifu_l0_btb_entry.scala 74:22]
-    entry_data <= entry_signal @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_1 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_4 = bits(io.entry_wen, 1, 1) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_5 = and(entry_clk_en, _T_4) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_5 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_1 <= io.entry_update_ras @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_ras <= entry_signal_1 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_2 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_6 = bits(io.entry_wen, 2, 2) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_7 = and(entry_clk_en, _T_6) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_7 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_2 <= io.entry_update_cnt @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_cnt <= entry_signal_2 @[ct_ifu_l0_btb_entry.scala 76:9]
-    reg entry_signal_3 : UInt<1>, gatedclk.clk_out with :
-      reset => (_T_1, UInt<1>("h0")) @[ct_ifu_l0_btb_entry.scala 72:33]
-    node _T_8 = bits(io.entry_wen, 3, 3) @[ct_ifu_l0_btb_entry.scala 73:43]
-    node _T_9 = and(entry_clk_en, _T_8) @[ct_ifu_l0_btb_entry.scala 73:29]
-    when _T_9 : @[ct_ifu_l0_btb_entry.scala 73:48]
-      entry_signal_3 <= io.entry_update_vld @[ct_ifu_l0_btb_entry.scala 74:22]
-    io.entry_vld <= entry_signal_3 @[ct_ifu_l0_btb_entry.scala 76:9]
+    output entry_cnt : UInt<1>
+    output entry_ras : UInt<1>
+    output entry_tag : UInt<15>
+    output entry_target : UInt<20>
+    output entry_vld : UInt<1>
+    output entry_way_pred : UInt<2>
+    defname = ct_ifu_l0_btb_entry
 
   module ct_ifu_l0_btb :
     output io : { flip addrgen_l0_btb_update_vld : UInt<1>, flip addrgen_l0_btb_update_vld_bit : UInt<1>, flip cp0_ifu_btb_en : UInt<1>, flip cp0_ifu_icg_en : UInt<1>, flip cp0_ifu_l0btb_en : UInt<1>, flip cp0_yy_clk_en : UInt<1>, flip cpurst_b : UInt<1>, flip forever_cpuclk : UInt<1>, flip ibdp_l0_btb_fifo_update_vld : UInt<1>, flip ibdp_l0_btb_update_cnt_bit : UInt<1>, flip ibdp_l0_btb_update_ras_bit : UInt<1>, flip ibdp_l0_btb_update_vld : UInt<1>, flip ibdp_l0_btb_update_vld_bit : UInt<1>, flip ifctrl_l0_btb_inv : UInt<1>, flip ifctrl_l0_btb_stall : UInt<1>, flip ipctrl_l0_btb_chgflw_vld : UInt<1>, flip ipctrl_l0_btb_ip_vld : UInt<1>, flip ipctrl_l0_btb_wait_next : UInt<1>, flip pcgen_l0_btb_chgflw_mask : UInt<1>, flip pcgen_l0_btb_chgflw_vld : UInt<1>, flip ras_l0_btb_ras_push : UInt<1>, l0_btb_ifctrl_chglfw_vld : UInt<1>, l0_btb_ifdp_counter : UInt<1>, l0_btb_ifdp_hit : UInt<1>, l0_btb_ifdp_ras : UInt<1>, flip addrgen_l0_btb_update_entry : UInt<16>, flip addrgen_l0_btb_wen : UInt<4>, flip ibdp_l0_btb_update_data : UInt<37>, flip ibdp_l0_btb_update_entry : UInt<16>, flip ibdp_l0_btb_wen : UInt<4>, flip ipdp_l0_btb_ras_pc : UInt<39>, flip ipdp_l0_btb_ras_push : UInt<1>, flip l0_btb_update_vld_for_gateclk : UInt<1>, flip pad_yy_icg_scan_en : UInt<1>, flip pcgen_l0_btb_chgflw_pc : UInt<15>, flip pcgen_l0_btb_if_pc : UInt<39>, flip ras_l0_btb_pc : UInt<39>, flip ras_l0_btb_push_pc : UInt<39>, l0_btb_debug_cur_state : UInt<2>, l0_btb_ibdp_entry_fifo : UInt<16>, l0_btb_ifctrl_chgflw_pc : UInt<39>, l0_btb_ifctrl_chgflw_way_pred : UInt<2>, l0_btb_ifdp_chgflw_pc : UInt<39>, l0_btb_ifdp_chgflw_way_pred : UInt<2>, l0_btb_ifdp_entry_hit : UInt<16>, l0_btb_ipctrl_st_wait : UInt<1>}
@@ -2839,1023 +2119,1359 @@ circuit ct_ifu_l0_btb :
       else :
         l0_btb_entry_inv_temp <= l0_btb_entry_inv_temp @[ct_ifu_l0_btb.scala 253:29]
     inst ct_ifu_l0_btb_entry of ct_ifu_l0_btb_entry @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry.entry_vld is invalid
+    ct_ifu_l0_btb_entry.entry_target is invalid
+    ct_ifu_l0_btb_entry.entry_tag is invalid
+    ct_ifu_l0_btb_entry.entry_ras is invalid
+    ct_ifu_l0_btb_entry.entry_cnt is invalid
+    ct_ifu_l0_btb_entry.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry.entry_wen is invalid
+    ct_ifu_l0_btb_entry.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry.entry_update_data is invalid
+    ct_ifu_l0_btb_entry.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry.entry_update is invalid
+    ct_ifu_l0_btb_entry.entry_inv is invalid
+    ct_ifu_l0_btb_entry.cpurst_b is invalid
+    ct_ifu_l0_btb_entry.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_1 of ct_ifu_l0_btb_entry_1 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_1.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_1.entry_vld is invalid
+    ct_ifu_l0_btb_entry_1.entry_target is invalid
+    ct_ifu_l0_btb_entry_1.entry_tag is invalid
+    ct_ifu_l0_btb_entry_1.entry_ras is invalid
+    ct_ifu_l0_btb_entry_1.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_1.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_1.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_1.entry_wen is invalid
+    ct_ifu_l0_btb_entry_1.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_1.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_1.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_1.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_1.entry_update is invalid
+    ct_ifu_l0_btb_entry_1.entry_inv is invalid
+    ct_ifu_l0_btb_entry_1.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_1.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_1.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_1.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_1.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_2 of ct_ifu_l0_btb_entry_2 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_2.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_2.entry_vld is invalid
+    ct_ifu_l0_btb_entry_2.entry_target is invalid
+    ct_ifu_l0_btb_entry_2.entry_tag is invalid
+    ct_ifu_l0_btb_entry_2.entry_ras is invalid
+    ct_ifu_l0_btb_entry_2.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_2.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_2.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_2.entry_wen is invalid
+    ct_ifu_l0_btb_entry_2.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_2.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_2.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_2.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_2.entry_update is invalid
+    ct_ifu_l0_btb_entry_2.entry_inv is invalid
+    ct_ifu_l0_btb_entry_2.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_2.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_2.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_2.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_2.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_3 of ct_ifu_l0_btb_entry_3 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_3.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_3.entry_vld is invalid
+    ct_ifu_l0_btb_entry_3.entry_target is invalid
+    ct_ifu_l0_btb_entry_3.entry_tag is invalid
+    ct_ifu_l0_btb_entry_3.entry_ras is invalid
+    ct_ifu_l0_btb_entry_3.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_3.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_3.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_3.entry_wen is invalid
+    ct_ifu_l0_btb_entry_3.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_3.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_3.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_3.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_3.entry_update is invalid
+    ct_ifu_l0_btb_entry_3.entry_inv is invalid
+    ct_ifu_l0_btb_entry_3.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_3.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_3.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_3.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_3.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_4 of ct_ifu_l0_btb_entry_4 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_4.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_4.entry_vld is invalid
+    ct_ifu_l0_btb_entry_4.entry_target is invalid
+    ct_ifu_l0_btb_entry_4.entry_tag is invalid
+    ct_ifu_l0_btb_entry_4.entry_ras is invalid
+    ct_ifu_l0_btb_entry_4.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_4.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_4.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_4.entry_wen is invalid
+    ct_ifu_l0_btb_entry_4.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_4.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_4.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_4.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_4.entry_update is invalid
+    ct_ifu_l0_btb_entry_4.entry_inv is invalid
+    ct_ifu_l0_btb_entry_4.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_4.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_4.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_4.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_4.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_5 of ct_ifu_l0_btb_entry_5 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_5.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_5.entry_vld is invalid
+    ct_ifu_l0_btb_entry_5.entry_target is invalid
+    ct_ifu_l0_btb_entry_5.entry_tag is invalid
+    ct_ifu_l0_btb_entry_5.entry_ras is invalid
+    ct_ifu_l0_btb_entry_5.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_5.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_5.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_5.entry_wen is invalid
+    ct_ifu_l0_btb_entry_5.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_5.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_5.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_5.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_5.entry_update is invalid
+    ct_ifu_l0_btb_entry_5.entry_inv is invalid
+    ct_ifu_l0_btb_entry_5.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_5.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_5.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_5.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_5.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_6 of ct_ifu_l0_btb_entry_6 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_6.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_6.entry_vld is invalid
+    ct_ifu_l0_btb_entry_6.entry_target is invalid
+    ct_ifu_l0_btb_entry_6.entry_tag is invalid
+    ct_ifu_l0_btb_entry_6.entry_ras is invalid
+    ct_ifu_l0_btb_entry_6.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_6.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_6.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_6.entry_wen is invalid
+    ct_ifu_l0_btb_entry_6.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_6.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_6.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_6.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_6.entry_update is invalid
+    ct_ifu_l0_btb_entry_6.entry_inv is invalid
+    ct_ifu_l0_btb_entry_6.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_6.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_6.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_6.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_6.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_7 of ct_ifu_l0_btb_entry_7 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_7.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_7.entry_vld is invalid
+    ct_ifu_l0_btb_entry_7.entry_target is invalid
+    ct_ifu_l0_btb_entry_7.entry_tag is invalid
+    ct_ifu_l0_btb_entry_7.entry_ras is invalid
+    ct_ifu_l0_btb_entry_7.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_7.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_7.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_7.entry_wen is invalid
+    ct_ifu_l0_btb_entry_7.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_7.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_7.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_7.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_7.entry_update is invalid
+    ct_ifu_l0_btb_entry_7.entry_inv is invalid
+    ct_ifu_l0_btb_entry_7.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_7.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_7.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_7.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_7.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_8 of ct_ifu_l0_btb_entry_8 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_8.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_8.entry_vld is invalid
+    ct_ifu_l0_btb_entry_8.entry_target is invalid
+    ct_ifu_l0_btb_entry_8.entry_tag is invalid
+    ct_ifu_l0_btb_entry_8.entry_ras is invalid
+    ct_ifu_l0_btb_entry_8.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_8.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_8.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_8.entry_wen is invalid
+    ct_ifu_l0_btb_entry_8.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_8.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_8.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_8.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_8.entry_update is invalid
+    ct_ifu_l0_btb_entry_8.entry_inv is invalid
+    ct_ifu_l0_btb_entry_8.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_8.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_8.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_8.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_8.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_9 of ct_ifu_l0_btb_entry_9 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_9.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_9.entry_vld is invalid
+    ct_ifu_l0_btb_entry_9.entry_target is invalid
+    ct_ifu_l0_btb_entry_9.entry_tag is invalid
+    ct_ifu_l0_btb_entry_9.entry_ras is invalid
+    ct_ifu_l0_btb_entry_9.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_9.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_9.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_9.entry_wen is invalid
+    ct_ifu_l0_btb_entry_9.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_9.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_9.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_9.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_9.entry_update is invalid
+    ct_ifu_l0_btb_entry_9.entry_inv is invalid
+    ct_ifu_l0_btb_entry_9.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_9.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_9.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_9.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_9.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_10 of ct_ifu_l0_btb_entry_10 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_10.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_10.entry_vld is invalid
+    ct_ifu_l0_btb_entry_10.entry_target is invalid
+    ct_ifu_l0_btb_entry_10.entry_tag is invalid
+    ct_ifu_l0_btb_entry_10.entry_ras is invalid
+    ct_ifu_l0_btb_entry_10.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_10.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_10.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_10.entry_wen is invalid
+    ct_ifu_l0_btb_entry_10.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_10.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_10.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_10.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_10.entry_update is invalid
+    ct_ifu_l0_btb_entry_10.entry_inv is invalid
+    ct_ifu_l0_btb_entry_10.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_10.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_10.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_10.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_10.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_11 of ct_ifu_l0_btb_entry_11 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_11.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_11.entry_vld is invalid
+    ct_ifu_l0_btb_entry_11.entry_target is invalid
+    ct_ifu_l0_btb_entry_11.entry_tag is invalid
+    ct_ifu_l0_btb_entry_11.entry_ras is invalid
+    ct_ifu_l0_btb_entry_11.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_11.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_11.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_11.entry_wen is invalid
+    ct_ifu_l0_btb_entry_11.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_11.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_11.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_11.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_11.entry_update is invalid
+    ct_ifu_l0_btb_entry_11.entry_inv is invalid
+    ct_ifu_l0_btb_entry_11.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_11.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_11.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_11.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_11.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_12 of ct_ifu_l0_btb_entry_12 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_12.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_12.entry_vld is invalid
+    ct_ifu_l0_btb_entry_12.entry_target is invalid
+    ct_ifu_l0_btb_entry_12.entry_tag is invalid
+    ct_ifu_l0_btb_entry_12.entry_ras is invalid
+    ct_ifu_l0_btb_entry_12.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_12.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_12.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_12.entry_wen is invalid
+    ct_ifu_l0_btb_entry_12.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_12.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_12.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_12.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_12.entry_update is invalid
+    ct_ifu_l0_btb_entry_12.entry_inv is invalid
+    ct_ifu_l0_btb_entry_12.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_12.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_12.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_12.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_12.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_13 of ct_ifu_l0_btb_entry_13 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_13.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_13.entry_vld is invalid
+    ct_ifu_l0_btb_entry_13.entry_target is invalid
+    ct_ifu_l0_btb_entry_13.entry_tag is invalid
+    ct_ifu_l0_btb_entry_13.entry_ras is invalid
+    ct_ifu_l0_btb_entry_13.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_13.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_13.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_13.entry_wen is invalid
+    ct_ifu_l0_btb_entry_13.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_13.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_13.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_13.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_13.entry_update is invalid
+    ct_ifu_l0_btb_entry_13.entry_inv is invalid
+    ct_ifu_l0_btb_entry_13.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_13.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_13.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_13.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_13.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_14 of ct_ifu_l0_btb_entry_14 @[ct_ifu_l0_btb.scala 260:51]
+    ct_ifu_l0_btb_entry_14.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_14.entry_vld is invalid
+    ct_ifu_l0_btb_entry_14.entry_target is invalid
+    ct_ifu_l0_btb_entry_14.entry_tag is invalid
+    ct_ifu_l0_btb_entry_14.entry_ras is invalid
+    ct_ifu_l0_btb_entry_14.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_14.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_14.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_14.entry_wen is invalid
+    ct_ifu_l0_btb_entry_14.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_14.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_14.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_14.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_14.entry_update is invalid
+    ct_ifu_l0_btb_entry_14.entry_inv is invalid
+    ct_ifu_l0_btb_entry_14.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_14.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_14.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_14.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_14.cp0_ifu_btb_en is invalid
     inst ct_ifu_l0_btb_entry_15 of ct_ifu_l0_btb_entry_15 @[ct_ifu_l0_btb.scala 260:51]
-    ct_ifu_l0_btb_entry.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[0] <= ct_ifu_l0_btb_entry.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[0] <= ct_ifu_l0_btb_entry.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[0] <= ct_ifu_l0_btb_entry.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][0] <= _entry_targets_0_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][0] <= _entry_targets_1_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][0] <= _entry_targets_2_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][0] <= _entry_targets_3_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][0] <= _entry_targets_4_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][0] <= _entry_targets_5_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][0] <= _entry_targets_6_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][0] <= _entry_targets_7_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][0] <= _entry_targets_8_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][0] <= _entry_targets_9_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][0] <= _entry_targets_10_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][0] <= _entry_targets_11_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][0] <= _entry_targets_12_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][0] <= _entry_targets_13_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][0] <= _entry_targets_14_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][0] <= _entry_targets_15_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][0] <= _entry_targets_16_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][0] <= _entry_targets_17_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][0] <= _entry_targets_18_0_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_0_T = bits(ct_ifu_l0_btb_entry.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][0] <= _entry_targets_19_0_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry.io.entry_update <= l0_btb_update_entry[0] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[0] <= ct_ifu_l0_btb_entry.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_0_T = bits(ct_ifu_l0_btb_entry.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[0] <= _entry_way_pred_1_0_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_0_T = bits(ct_ifu_l0_btb_entry.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[0] <= _entry_way_pred_2_0_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_1.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_1.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_1.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_1.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_1.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[1] <= ct_ifu_l0_btb_entry_1.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_1.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[1] <= ct_ifu_l0_btb_entry_1.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[1] <= ct_ifu_l0_btb_entry_1.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][1] <= _entry_targets_0_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][1] <= _entry_targets_1_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][1] <= _entry_targets_2_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][1] <= _entry_targets_3_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][1] <= _entry_targets_4_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][1] <= _entry_targets_5_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][1] <= _entry_targets_6_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][1] <= _entry_targets_7_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][1] <= _entry_targets_8_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][1] <= _entry_targets_9_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][1] <= _entry_targets_10_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][1] <= _entry_targets_11_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][1] <= _entry_targets_12_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][1] <= _entry_targets_13_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][1] <= _entry_targets_14_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][1] <= _entry_targets_15_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][1] <= _entry_targets_16_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][1] <= _entry_targets_17_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][1] <= _entry_targets_18_1_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][1] <= _entry_targets_19_1_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_1.io.entry_update <= l0_btb_update_entry[1] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_1.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_1.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_1.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_1.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[1] <= ct_ifu_l0_btb_entry_1.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[1] <= _entry_way_pred_1_1_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_1_T = bits(ct_ifu_l0_btb_entry_1.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[1] <= _entry_way_pred_2_1_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_1.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_1.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_1.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_2.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_2.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_2.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_2.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_2.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[2] <= ct_ifu_l0_btb_entry_2.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_2.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[2] <= ct_ifu_l0_btb_entry_2.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[2] <= ct_ifu_l0_btb_entry_2.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][2] <= _entry_targets_0_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][2] <= _entry_targets_1_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][2] <= _entry_targets_2_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][2] <= _entry_targets_3_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][2] <= _entry_targets_4_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][2] <= _entry_targets_5_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][2] <= _entry_targets_6_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][2] <= _entry_targets_7_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][2] <= _entry_targets_8_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][2] <= _entry_targets_9_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][2] <= _entry_targets_10_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][2] <= _entry_targets_11_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][2] <= _entry_targets_12_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][2] <= _entry_targets_13_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][2] <= _entry_targets_14_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][2] <= _entry_targets_15_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][2] <= _entry_targets_16_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][2] <= _entry_targets_17_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][2] <= _entry_targets_18_2_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][2] <= _entry_targets_19_2_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_2.io.entry_update <= l0_btb_update_entry[2] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_2.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_2.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_2.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_2.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[2] <= ct_ifu_l0_btb_entry_2.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[2] <= _entry_way_pred_1_2_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_2_T = bits(ct_ifu_l0_btb_entry_2.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[2] <= _entry_way_pred_2_2_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_2.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_2.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_2.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_3.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_3.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_3.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_3.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_3.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[3] <= ct_ifu_l0_btb_entry_3.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_3.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[3] <= ct_ifu_l0_btb_entry_3.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[3] <= ct_ifu_l0_btb_entry_3.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][3] <= _entry_targets_0_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][3] <= _entry_targets_1_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][3] <= _entry_targets_2_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][3] <= _entry_targets_3_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][3] <= _entry_targets_4_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][3] <= _entry_targets_5_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][3] <= _entry_targets_6_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][3] <= _entry_targets_7_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][3] <= _entry_targets_8_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][3] <= _entry_targets_9_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][3] <= _entry_targets_10_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][3] <= _entry_targets_11_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][3] <= _entry_targets_12_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][3] <= _entry_targets_13_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][3] <= _entry_targets_14_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][3] <= _entry_targets_15_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][3] <= _entry_targets_16_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][3] <= _entry_targets_17_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][3] <= _entry_targets_18_3_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][3] <= _entry_targets_19_3_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_3.io.entry_update <= l0_btb_update_entry[3] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_3.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_3.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_3.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_3.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[3] <= ct_ifu_l0_btb_entry_3.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[3] <= _entry_way_pred_1_3_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_3_T = bits(ct_ifu_l0_btb_entry_3.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[3] <= _entry_way_pred_2_3_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_3.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_3.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_3.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_4.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_4.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_4.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_4.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_4.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[4] <= ct_ifu_l0_btb_entry_4.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_4.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[4] <= ct_ifu_l0_btb_entry_4.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[4] <= ct_ifu_l0_btb_entry_4.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][4] <= _entry_targets_0_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][4] <= _entry_targets_1_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][4] <= _entry_targets_2_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][4] <= _entry_targets_3_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][4] <= _entry_targets_4_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][4] <= _entry_targets_5_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][4] <= _entry_targets_6_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][4] <= _entry_targets_7_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][4] <= _entry_targets_8_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][4] <= _entry_targets_9_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][4] <= _entry_targets_10_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][4] <= _entry_targets_11_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][4] <= _entry_targets_12_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][4] <= _entry_targets_13_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][4] <= _entry_targets_14_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][4] <= _entry_targets_15_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][4] <= _entry_targets_16_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][4] <= _entry_targets_17_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][4] <= _entry_targets_18_4_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][4] <= _entry_targets_19_4_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_4.io.entry_update <= l0_btb_update_entry[4] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_4.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_4.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_4.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_4.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[4] <= ct_ifu_l0_btb_entry_4.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[4] <= _entry_way_pred_1_4_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_4_T = bits(ct_ifu_l0_btb_entry_4.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[4] <= _entry_way_pred_2_4_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_4.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_4.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_4.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_5.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_5.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_5.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_5.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_5.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[5] <= ct_ifu_l0_btb_entry_5.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_5.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[5] <= ct_ifu_l0_btb_entry_5.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[5] <= ct_ifu_l0_btb_entry_5.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][5] <= _entry_targets_0_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][5] <= _entry_targets_1_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][5] <= _entry_targets_2_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][5] <= _entry_targets_3_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][5] <= _entry_targets_4_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][5] <= _entry_targets_5_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][5] <= _entry_targets_6_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][5] <= _entry_targets_7_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][5] <= _entry_targets_8_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][5] <= _entry_targets_9_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][5] <= _entry_targets_10_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][5] <= _entry_targets_11_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][5] <= _entry_targets_12_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][5] <= _entry_targets_13_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][5] <= _entry_targets_14_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][5] <= _entry_targets_15_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][5] <= _entry_targets_16_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][5] <= _entry_targets_17_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][5] <= _entry_targets_18_5_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][5] <= _entry_targets_19_5_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_5.io.entry_update <= l0_btb_update_entry[5] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_5.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_5.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_5.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_5.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[5] <= ct_ifu_l0_btb_entry_5.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[5] <= _entry_way_pred_1_5_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_5_T = bits(ct_ifu_l0_btb_entry_5.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[5] <= _entry_way_pred_2_5_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_5.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_5.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_5.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_6.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_6.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_6.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_6.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_6.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[6] <= ct_ifu_l0_btb_entry_6.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_6.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[6] <= ct_ifu_l0_btb_entry_6.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[6] <= ct_ifu_l0_btb_entry_6.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][6] <= _entry_targets_0_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][6] <= _entry_targets_1_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][6] <= _entry_targets_2_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][6] <= _entry_targets_3_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][6] <= _entry_targets_4_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][6] <= _entry_targets_5_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][6] <= _entry_targets_6_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][6] <= _entry_targets_7_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][6] <= _entry_targets_8_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][6] <= _entry_targets_9_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][6] <= _entry_targets_10_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][6] <= _entry_targets_11_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][6] <= _entry_targets_12_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][6] <= _entry_targets_13_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][6] <= _entry_targets_14_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][6] <= _entry_targets_15_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][6] <= _entry_targets_16_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][6] <= _entry_targets_17_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][6] <= _entry_targets_18_6_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][6] <= _entry_targets_19_6_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_6.io.entry_update <= l0_btb_update_entry[6] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_6.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_6.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_6.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_6.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[6] <= ct_ifu_l0_btb_entry_6.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[6] <= _entry_way_pred_1_6_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_6_T = bits(ct_ifu_l0_btb_entry_6.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[6] <= _entry_way_pred_2_6_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_6.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_6.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_6.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_7.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_7.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_7.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_7.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_7.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[7] <= ct_ifu_l0_btb_entry_7.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_7.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[7] <= ct_ifu_l0_btb_entry_7.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[7] <= ct_ifu_l0_btb_entry_7.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][7] <= _entry_targets_0_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][7] <= _entry_targets_1_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][7] <= _entry_targets_2_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][7] <= _entry_targets_3_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][7] <= _entry_targets_4_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][7] <= _entry_targets_5_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][7] <= _entry_targets_6_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][7] <= _entry_targets_7_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][7] <= _entry_targets_8_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][7] <= _entry_targets_9_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][7] <= _entry_targets_10_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][7] <= _entry_targets_11_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][7] <= _entry_targets_12_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][7] <= _entry_targets_13_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][7] <= _entry_targets_14_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][7] <= _entry_targets_15_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][7] <= _entry_targets_16_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][7] <= _entry_targets_17_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][7] <= _entry_targets_18_7_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][7] <= _entry_targets_19_7_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_7.io.entry_update <= l0_btb_update_entry[7] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_7.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_7.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_7.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_7.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[7] <= ct_ifu_l0_btb_entry_7.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[7] <= _entry_way_pred_1_7_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_7_T = bits(ct_ifu_l0_btb_entry_7.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[7] <= _entry_way_pred_2_7_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_7.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_7.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_7.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_8.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_8.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_8.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_8.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_8.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[8] <= ct_ifu_l0_btb_entry_8.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_8.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[8] <= ct_ifu_l0_btb_entry_8.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[8] <= ct_ifu_l0_btb_entry_8.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][8] <= _entry_targets_0_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][8] <= _entry_targets_1_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][8] <= _entry_targets_2_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][8] <= _entry_targets_3_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][8] <= _entry_targets_4_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][8] <= _entry_targets_5_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][8] <= _entry_targets_6_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][8] <= _entry_targets_7_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][8] <= _entry_targets_8_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][8] <= _entry_targets_9_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][8] <= _entry_targets_10_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][8] <= _entry_targets_11_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][8] <= _entry_targets_12_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][8] <= _entry_targets_13_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][8] <= _entry_targets_14_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][8] <= _entry_targets_15_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][8] <= _entry_targets_16_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][8] <= _entry_targets_17_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][8] <= _entry_targets_18_8_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][8] <= _entry_targets_19_8_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_8.io.entry_update <= l0_btb_update_entry[8] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_8.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_8.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_8.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_8.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[8] <= ct_ifu_l0_btb_entry_8.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[8] <= _entry_way_pred_1_8_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_8_T = bits(ct_ifu_l0_btb_entry_8.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[8] <= _entry_way_pred_2_8_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_8.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_8.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_8.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_9.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_9.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_9.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_9.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_9.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[9] <= ct_ifu_l0_btb_entry_9.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_9.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[9] <= ct_ifu_l0_btb_entry_9.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[9] <= ct_ifu_l0_btb_entry_9.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][9] <= _entry_targets_0_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][9] <= _entry_targets_1_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][9] <= _entry_targets_2_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][9] <= _entry_targets_3_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][9] <= _entry_targets_4_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][9] <= _entry_targets_5_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][9] <= _entry_targets_6_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][9] <= _entry_targets_7_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][9] <= _entry_targets_8_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][9] <= _entry_targets_9_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][9] <= _entry_targets_10_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][9] <= _entry_targets_11_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][9] <= _entry_targets_12_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][9] <= _entry_targets_13_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][9] <= _entry_targets_14_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][9] <= _entry_targets_15_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][9] <= _entry_targets_16_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][9] <= _entry_targets_17_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][9] <= _entry_targets_18_9_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][9] <= _entry_targets_19_9_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_9.io.entry_update <= l0_btb_update_entry[9] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_9.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_9.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_9.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_9.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[9] <= ct_ifu_l0_btb_entry_9.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[9] <= _entry_way_pred_1_9_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_9_T = bits(ct_ifu_l0_btb_entry_9.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[9] <= _entry_way_pred_2_9_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_9.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_9.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_9.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_10.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_10.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_10.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_10.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_10.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[10] <= ct_ifu_l0_btb_entry_10.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_10.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[10] <= ct_ifu_l0_btb_entry_10.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[10] <= ct_ifu_l0_btb_entry_10.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][10] <= _entry_targets_0_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][10] <= _entry_targets_1_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][10] <= _entry_targets_2_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][10] <= _entry_targets_3_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][10] <= _entry_targets_4_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][10] <= _entry_targets_5_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][10] <= _entry_targets_6_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][10] <= _entry_targets_7_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][10] <= _entry_targets_8_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][10] <= _entry_targets_9_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][10] <= _entry_targets_10_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][10] <= _entry_targets_11_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][10] <= _entry_targets_12_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][10] <= _entry_targets_13_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][10] <= _entry_targets_14_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][10] <= _entry_targets_15_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][10] <= _entry_targets_16_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][10] <= _entry_targets_17_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][10] <= _entry_targets_18_10_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][10] <= _entry_targets_19_10_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_10.io.entry_update <= l0_btb_update_entry[10] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_10.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_10.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_10.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_10.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[10] <= ct_ifu_l0_btb_entry_10.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[10] <= _entry_way_pred_1_10_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_10_T = bits(ct_ifu_l0_btb_entry_10.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[10] <= _entry_way_pred_2_10_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_10.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_10.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_10.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_11.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_11.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_11.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_11.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_11.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[11] <= ct_ifu_l0_btb_entry_11.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_11.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[11] <= ct_ifu_l0_btb_entry_11.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[11] <= ct_ifu_l0_btb_entry_11.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][11] <= _entry_targets_0_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][11] <= _entry_targets_1_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][11] <= _entry_targets_2_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][11] <= _entry_targets_3_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][11] <= _entry_targets_4_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][11] <= _entry_targets_5_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][11] <= _entry_targets_6_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][11] <= _entry_targets_7_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][11] <= _entry_targets_8_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][11] <= _entry_targets_9_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][11] <= _entry_targets_10_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][11] <= _entry_targets_11_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][11] <= _entry_targets_12_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][11] <= _entry_targets_13_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][11] <= _entry_targets_14_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][11] <= _entry_targets_15_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][11] <= _entry_targets_16_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][11] <= _entry_targets_17_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][11] <= _entry_targets_18_11_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][11] <= _entry_targets_19_11_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_11.io.entry_update <= l0_btb_update_entry[11] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_11.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_11.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_11.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_11.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[11] <= ct_ifu_l0_btb_entry_11.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[11] <= _entry_way_pred_1_11_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_11_T = bits(ct_ifu_l0_btb_entry_11.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[11] <= _entry_way_pred_2_11_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_11.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_11.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_11.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_12.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_12.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_12.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_12.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_12.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[12] <= ct_ifu_l0_btb_entry_12.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_12.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[12] <= ct_ifu_l0_btb_entry_12.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[12] <= ct_ifu_l0_btb_entry_12.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][12] <= _entry_targets_0_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][12] <= _entry_targets_1_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][12] <= _entry_targets_2_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][12] <= _entry_targets_3_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][12] <= _entry_targets_4_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][12] <= _entry_targets_5_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][12] <= _entry_targets_6_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][12] <= _entry_targets_7_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][12] <= _entry_targets_8_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][12] <= _entry_targets_9_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][12] <= _entry_targets_10_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][12] <= _entry_targets_11_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][12] <= _entry_targets_12_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][12] <= _entry_targets_13_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][12] <= _entry_targets_14_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][12] <= _entry_targets_15_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][12] <= _entry_targets_16_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][12] <= _entry_targets_17_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][12] <= _entry_targets_18_12_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][12] <= _entry_targets_19_12_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_12.io.entry_update <= l0_btb_update_entry[12] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_12.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_12.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_12.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_12.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[12] <= ct_ifu_l0_btb_entry_12.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[12] <= _entry_way_pred_1_12_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_12_T = bits(ct_ifu_l0_btb_entry_12.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[12] <= _entry_way_pred_2_12_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_12.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_12.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_12.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_13.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_13.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_13.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_13.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_13.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[13] <= ct_ifu_l0_btb_entry_13.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_13.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[13] <= ct_ifu_l0_btb_entry_13.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[13] <= ct_ifu_l0_btb_entry_13.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][13] <= _entry_targets_0_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][13] <= _entry_targets_1_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][13] <= _entry_targets_2_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][13] <= _entry_targets_3_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][13] <= _entry_targets_4_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][13] <= _entry_targets_5_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][13] <= _entry_targets_6_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][13] <= _entry_targets_7_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][13] <= _entry_targets_8_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][13] <= _entry_targets_9_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][13] <= _entry_targets_10_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][13] <= _entry_targets_11_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][13] <= _entry_targets_12_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][13] <= _entry_targets_13_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][13] <= _entry_targets_14_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][13] <= _entry_targets_15_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][13] <= _entry_targets_16_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][13] <= _entry_targets_17_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][13] <= _entry_targets_18_13_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][13] <= _entry_targets_19_13_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_13.io.entry_update <= l0_btb_update_entry[13] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_13.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_13.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_13.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_13.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[13] <= ct_ifu_l0_btb_entry_13.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[13] <= _entry_way_pred_1_13_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_13_T = bits(ct_ifu_l0_btb_entry_13.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[13] <= _entry_way_pred_2_13_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_13.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_13.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_13.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_14.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_14.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_14.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_14.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_14.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[14] <= ct_ifu_l0_btb_entry_14.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_14.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[14] <= ct_ifu_l0_btb_entry_14.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[14] <= ct_ifu_l0_btb_entry_14.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][14] <= _entry_targets_0_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][14] <= _entry_targets_1_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][14] <= _entry_targets_2_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][14] <= _entry_targets_3_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][14] <= _entry_targets_4_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][14] <= _entry_targets_5_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][14] <= _entry_targets_6_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][14] <= _entry_targets_7_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][14] <= _entry_targets_8_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][14] <= _entry_targets_9_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][14] <= _entry_targets_10_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][14] <= _entry_targets_11_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][14] <= _entry_targets_12_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][14] <= _entry_targets_13_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][14] <= _entry_targets_14_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][14] <= _entry_targets_15_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][14] <= _entry_targets_16_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][14] <= _entry_targets_17_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][14] <= _entry_targets_18_14_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][14] <= _entry_targets_19_14_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_14.io.entry_update <= l0_btb_update_entry[14] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_14.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_14.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_14.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_14.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[14] <= ct_ifu_l0_btb_entry_14.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[14] <= _entry_way_pred_1_14_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_14_T = bits(ct_ifu_l0_btb_entry_14.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[14] <= _entry_way_pred_2_14_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_14.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_14.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_14.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    ct_ifu_l0_btb_entry_15.io.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 263:36]
-    ct_ifu_l0_btb_entry_15.io.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 264:36]
-    ct_ifu_l0_btb_entry_15.io.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 265:38]
-    ct_ifu_l0_btb_entry_15.io.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 266:35]
-    ct_ifu_l0_btb_entry_15.io.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 267:31]
-    entry_cnt[15] <= ct_ifu_l0_btb_entry_15.io.entry_cnt @[ct_ifu_l0_btb.scala 268:18]
-    ct_ifu_l0_btb_entry_15.io.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 269:31]
-    entry_ras[15] <= ct_ifu_l0_btb_entry_15.io.entry_ras @[ct_ifu_l0_btb.scala 270:18]
-    entry_tag[15] <= ct_ifu_l0_btb_entry_15.io.entry_tag @[ct_ifu_l0_btb.scala 271:18]
-    node _entry_targets_0_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[0][15] <= _entry_targets_0_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_1_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[1][15] <= _entry_targets_1_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_2_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[2][15] <= _entry_targets_2_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_3_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[3][15] <= _entry_targets_3_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_4_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[4][15] <= _entry_targets_4_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_5_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[5][15] <= _entry_targets_5_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_6_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[6][15] <= _entry_targets_6_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_7_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[7][15] <= _entry_targets_7_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_8_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[8][15] <= _entry_targets_8_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_9_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[9][15] <= _entry_targets_9_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_10_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[10][15] <= _entry_targets_10_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_11_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[11][15] <= _entry_targets_11_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_12_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[12][15] <= _entry_targets_12_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_13_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[13][15] <= _entry_targets_13_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_14_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[14][15] <= _entry_targets_14_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_15_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[15][15] <= _entry_targets_15_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_16_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[16][15] <= _entry_targets_16_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_17_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[17][15] <= _entry_targets_17_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_18_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[18][15] <= _entry_targets_18_15_T @[ct_ifu_l0_btb.scala 274:28]
-    node _entry_targets_19_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 274:59]
-    entry_targets[19][15] <= _entry_targets_19_15_T @[ct_ifu_l0_btb.scala 274:28]
-    ct_ifu_l0_btb_entry_15.io.entry_update <= l0_btb_update_entry[15] @[ct_ifu_l0_btb.scala 276:34]
-    ct_ifu_l0_btb_entry_15.io.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 277:38]
-    ct_ifu_l0_btb_entry_15.io.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 278:39]
-    ct_ifu_l0_btb_entry_15.io.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 279:38]
-    ct_ifu_l0_btb_entry_15.io.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 280:38]
-    entry_vld[15] <= ct_ifu_l0_btb_entry_15.io.entry_vld @[ct_ifu_l0_btb.scala 281:18]
-    node _entry_way_pred_1_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 282:56]
-    entry_way_pred_1[15] <= _entry_way_pred_1_15_T @[ct_ifu_l0_btb.scala 282:24]
-    node _entry_way_pred_2_15_T = bits(ct_ifu_l0_btb_entry_15.io.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 283:56]
-    entry_way_pred_2[15] <= _entry_way_pred_2_15_T @[ct_ifu_l0_btb.scala 283:24]
-    ct_ifu_l0_btb_entry_15.io.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 284:31]
-    ct_ifu_l0_btb_entry_15.io.forever_cpuclk <= io.forever_cpuclk @[ct_ifu_l0_btb.scala 285:36]
-    ct_ifu_l0_btb_entry_15.io.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 286:40]
-    io.l0_btb_ifctrl_chglfw_vld <= entry_chgflw_vld @[ct_ifu_l0_btb.scala 291:31]
-    io.l0_btb_ifctrl_chgflw_pc <= entry_hit_target @[ct_ifu_l0_btb.scala 292:31]
+    ct_ifu_l0_btb_entry_15.entry_way_pred is invalid
+    ct_ifu_l0_btb_entry_15.entry_vld is invalid
+    ct_ifu_l0_btb_entry_15.entry_target is invalid
+    ct_ifu_l0_btb_entry_15.entry_tag is invalid
+    ct_ifu_l0_btb_entry_15.entry_ras is invalid
+    ct_ifu_l0_btb_entry_15.entry_cnt is invalid
+    ct_ifu_l0_btb_entry_15.pad_yy_icg_scan_en is invalid
+    ct_ifu_l0_btb_entry_15.forever_cpuclk is invalid
+    ct_ifu_l0_btb_entry_15.entry_wen is invalid
+    ct_ifu_l0_btb_entry_15.entry_update_vld is invalid
+    ct_ifu_l0_btb_entry_15.entry_update_ras is invalid
+    ct_ifu_l0_btb_entry_15.entry_update_data is invalid
+    ct_ifu_l0_btb_entry_15.entry_update_cnt is invalid
+    ct_ifu_l0_btb_entry_15.entry_update is invalid
+    ct_ifu_l0_btb_entry_15.entry_inv is invalid
+    ct_ifu_l0_btb_entry_15.cpurst_b is invalid
+    ct_ifu_l0_btb_entry_15.cp0_yy_clk_en is invalid
+    ct_ifu_l0_btb_entry_15.cp0_ifu_l0btb_en is invalid
+    ct_ifu_l0_btb_entry_15.cp0_ifu_icg_en is invalid
+    ct_ifu_l0_btb_entry_15.cp0_ifu_btb_en is invalid
+    ct_ifu_l0_btb_entry.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[0] <= ct_ifu_l0_btb_entry.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[0] <= ct_ifu_l0_btb_entry.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[0] <= ct_ifu_l0_btb_entry.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][0] <= _entry_targets_0_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][0] <= _entry_targets_1_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][0] <= _entry_targets_2_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][0] <= _entry_targets_3_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][0] <= _entry_targets_4_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][0] <= _entry_targets_5_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][0] <= _entry_targets_6_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][0] <= _entry_targets_7_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][0] <= _entry_targets_8_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][0] <= _entry_targets_9_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][0] <= _entry_targets_10_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][0] <= _entry_targets_11_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][0] <= _entry_targets_12_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][0] <= _entry_targets_13_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][0] <= _entry_targets_14_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][0] <= _entry_targets_15_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][0] <= _entry_targets_16_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][0] <= _entry_targets_17_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][0] <= _entry_targets_18_0_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_0_T = bits(ct_ifu_l0_btb_entry.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][0] <= _entry_targets_19_0_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry.entry_update <= l0_btb_update_entry[0] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[0] <= ct_ifu_l0_btb_entry.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_0_T = bits(ct_ifu_l0_btb_entry.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[0] <= _entry_way_pred_1_0_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_0_T = bits(ct_ifu_l0_btb_entry.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[0] <= _entry_way_pred_2_0_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_56 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry.forever_cpuclk <= _T_56 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_1.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_1.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_1.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_1.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_1.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[1] <= ct_ifu_l0_btb_entry_1.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_1.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[1] <= ct_ifu_l0_btb_entry_1.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[1] <= ct_ifu_l0_btb_entry_1.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][1] <= _entry_targets_0_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][1] <= _entry_targets_1_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][1] <= _entry_targets_2_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][1] <= _entry_targets_3_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][1] <= _entry_targets_4_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][1] <= _entry_targets_5_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][1] <= _entry_targets_6_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][1] <= _entry_targets_7_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][1] <= _entry_targets_8_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][1] <= _entry_targets_9_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][1] <= _entry_targets_10_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][1] <= _entry_targets_11_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][1] <= _entry_targets_12_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][1] <= _entry_targets_13_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][1] <= _entry_targets_14_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][1] <= _entry_targets_15_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][1] <= _entry_targets_16_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][1] <= _entry_targets_17_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][1] <= _entry_targets_18_1_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_1_T = bits(ct_ifu_l0_btb_entry_1.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][1] <= _entry_targets_19_1_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_1.entry_update <= l0_btb_update_entry[1] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_1.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_1.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_1.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_1.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[1] <= ct_ifu_l0_btb_entry_1.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_1_T = bits(ct_ifu_l0_btb_entry_1.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[1] <= _entry_way_pred_1_1_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_1_T = bits(ct_ifu_l0_btb_entry_1.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[1] <= _entry_way_pred_2_1_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_1.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_57 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_1.forever_cpuclk <= _T_57 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_1.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_2.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_2.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_2.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_2.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_2.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[2] <= ct_ifu_l0_btb_entry_2.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_2.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[2] <= ct_ifu_l0_btb_entry_2.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[2] <= ct_ifu_l0_btb_entry_2.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][2] <= _entry_targets_0_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][2] <= _entry_targets_1_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][2] <= _entry_targets_2_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][2] <= _entry_targets_3_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][2] <= _entry_targets_4_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][2] <= _entry_targets_5_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][2] <= _entry_targets_6_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][2] <= _entry_targets_7_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][2] <= _entry_targets_8_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][2] <= _entry_targets_9_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][2] <= _entry_targets_10_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][2] <= _entry_targets_11_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][2] <= _entry_targets_12_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][2] <= _entry_targets_13_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][2] <= _entry_targets_14_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][2] <= _entry_targets_15_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][2] <= _entry_targets_16_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][2] <= _entry_targets_17_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][2] <= _entry_targets_18_2_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_2_T = bits(ct_ifu_l0_btb_entry_2.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][2] <= _entry_targets_19_2_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_2.entry_update <= l0_btb_update_entry[2] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_2.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_2.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_2.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_2.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[2] <= ct_ifu_l0_btb_entry_2.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_2_T = bits(ct_ifu_l0_btb_entry_2.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[2] <= _entry_way_pred_1_2_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_2_T = bits(ct_ifu_l0_btb_entry_2.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[2] <= _entry_way_pred_2_2_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_2.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_58 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_2.forever_cpuclk <= _T_58 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_2.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_3.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_3.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_3.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_3.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_3.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[3] <= ct_ifu_l0_btb_entry_3.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_3.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[3] <= ct_ifu_l0_btb_entry_3.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[3] <= ct_ifu_l0_btb_entry_3.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][3] <= _entry_targets_0_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][3] <= _entry_targets_1_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][3] <= _entry_targets_2_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][3] <= _entry_targets_3_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][3] <= _entry_targets_4_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][3] <= _entry_targets_5_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][3] <= _entry_targets_6_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][3] <= _entry_targets_7_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][3] <= _entry_targets_8_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][3] <= _entry_targets_9_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][3] <= _entry_targets_10_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][3] <= _entry_targets_11_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][3] <= _entry_targets_12_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][3] <= _entry_targets_13_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][3] <= _entry_targets_14_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][3] <= _entry_targets_15_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][3] <= _entry_targets_16_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][3] <= _entry_targets_17_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][3] <= _entry_targets_18_3_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_3_T = bits(ct_ifu_l0_btb_entry_3.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][3] <= _entry_targets_19_3_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_3.entry_update <= l0_btb_update_entry[3] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_3.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_3.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_3.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_3.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[3] <= ct_ifu_l0_btb_entry_3.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_3_T = bits(ct_ifu_l0_btb_entry_3.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[3] <= _entry_way_pred_1_3_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_3_T = bits(ct_ifu_l0_btb_entry_3.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[3] <= _entry_way_pred_2_3_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_3.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_59 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_3.forever_cpuclk <= _T_59 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_3.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_4.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_4.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_4.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_4.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_4.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[4] <= ct_ifu_l0_btb_entry_4.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_4.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[4] <= ct_ifu_l0_btb_entry_4.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[4] <= ct_ifu_l0_btb_entry_4.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][4] <= _entry_targets_0_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][4] <= _entry_targets_1_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][4] <= _entry_targets_2_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][4] <= _entry_targets_3_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][4] <= _entry_targets_4_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][4] <= _entry_targets_5_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][4] <= _entry_targets_6_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][4] <= _entry_targets_7_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][4] <= _entry_targets_8_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][4] <= _entry_targets_9_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][4] <= _entry_targets_10_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][4] <= _entry_targets_11_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][4] <= _entry_targets_12_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][4] <= _entry_targets_13_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][4] <= _entry_targets_14_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][4] <= _entry_targets_15_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][4] <= _entry_targets_16_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][4] <= _entry_targets_17_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][4] <= _entry_targets_18_4_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_4_T = bits(ct_ifu_l0_btb_entry_4.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][4] <= _entry_targets_19_4_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_4.entry_update <= l0_btb_update_entry[4] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_4.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_4.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_4.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_4.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[4] <= ct_ifu_l0_btb_entry_4.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_4_T = bits(ct_ifu_l0_btb_entry_4.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[4] <= _entry_way_pred_1_4_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_4_T = bits(ct_ifu_l0_btb_entry_4.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[4] <= _entry_way_pred_2_4_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_4.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_60 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_4.forever_cpuclk <= _T_60 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_4.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_5.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_5.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_5.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_5.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_5.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[5] <= ct_ifu_l0_btb_entry_5.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_5.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[5] <= ct_ifu_l0_btb_entry_5.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[5] <= ct_ifu_l0_btb_entry_5.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][5] <= _entry_targets_0_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][5] <= _entry_targets_1_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][5] <= _entry_targets_2_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][5] <= _entry_targets_3_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][5] <= _entry_targets_4_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][5] <= _entry_targets_5_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][5] <= _entry_targets_6_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][5] <= _entry_targets_7_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][5] <= _entry_targets_8_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][5] <= _entry_targets_9_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][5] <= _entry_targets_10_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][5] <= _entry_targets_11_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][5] <= _entry_targets_12_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][5] <= _entry_targets_13_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][5] <= _entry_targets_14_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][5] <= _entry_targets_15_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][5] <= _entry_targets_16_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][5] <= _entry_targets_17_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][5] <= _entry_targets_18_5_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_5_T = bits(ct_ifu_l0_btb_entry_5.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][5] <= _entry_targets_19_5_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_5.entry_update <= l0_btb_update_entry[5] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_5.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_5.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_5.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_5.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[5] <= ct_ifu_l0_btb_entry_5.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_5_T = bits(ct_ifu_l0_btb_entry_5.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[5] <= _entry_way_pred_1_5_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_5_T = bits(ct_ifu_l0_btb_entry_5.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[5] <= _entry_way_pred_2_5_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_5.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_61 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_5.forever_cpuclk <= _T_61 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_5.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_6.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_6.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_6.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_6.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_6.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[6] <= ct_ifu_l0_btb_entry_6.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_6.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[6] <= ct_ifu_l0_btb_entry_6.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[6] <= ct_ifu_l0_btb_entry_6.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][6] <= _entry_targets_0_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][6] <= _entry_targets_1_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][6] <= _entry_targets_2_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][6] <= _entry_targets_3_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][6] <= _entry_targets_4_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][6] <= _entry_targets_5_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][6] <= _entry_targets_6_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][6] <= _entry_targets_7_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][6] <= _entry_targets_8_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][6] <= _entry_targets_9_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][6] <= _entry_targets_10_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][6] <= _entry_targets_11_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][6] <= _entry_targets_12_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][6] <= _entry_targets_13_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][6] <= _entry_targets_14_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][6] <= _entry_targets_15_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][6] <= _entry_targets_16_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][6] <= _entry_targets_17_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][6] <= _entry_targets_18_6_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_6_T = bits(ct_ifu_l0_btb_entry_6.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][6] <= _entry_targets_19_6_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_6.entry_update <= l0_btb_update_entry[6] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_6.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_6.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_6.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_6.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[6] <= ct_ifu_l0_btb_entry_6.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_6_T = bits(ct_ifu_l0_btb_entry_6.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[6] <= _entry_way_pred_1_6_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_6_T = bits(ct_ifu_l0_btb_entry_6.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[6] <= _entry_way_pred_2_6_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_6.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_62 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_6.forever_cpuclk <= _T_62 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_6.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_7.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_7.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_7.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_7.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_7.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[7] <= ct_ifu_l0_btb_entry_7.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_7.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[7] <= ct_ifu_l0_btb_entry_7.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[7] <= ct_ifu_l0_btb_entry_7.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][7] <= _entry_targets_0_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][7] <= _entry_targets_1_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][7] <= _entry_targets_2_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][7] <= _entry_targets_3_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][7] <= _entry_targets_4_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][7] <= _entry_targets_5_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][7] <= _entry_targets_6_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][7] <= _entry_targets_7_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][7] <= _entry_targets_8_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][7] <= _entry_targets_9_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][7] <= _entry_targets_10_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][7] <= _entry_targets_11_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][7] <= _entry_targets_12_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][7] <= _entry_targets_13_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][7] <= _entry_targets_14_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][7] <= _entry_targets_15_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][7] <= _entry_targets_16_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][7] <= _entry_targets_17_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][7] <= _entry_targets_18_7_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_7_T = bits(ct_ifu_l0_btb_entry_7.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][7] <= _entry_targets_19_7_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_7.entry_update <= l0_btb_update_entry[7] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_7.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_7.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_7.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_7.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[7] <= ct_ifu_l0_btb_entry_7.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_7_T = bits(ct_ifu_l0_btb_entry_7.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[7] <= _entry_way_pred_1_7_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_7_T = bits(ct_ifu_l0_btb_entry_7.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[7] <= _entry_way_pred_2_7_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_7.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_63 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_7.forever_cpuclk <= _T_63 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_7.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_8.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_8.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_8.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_8.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_8.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[8] <= ct_ifu_l0_btb_entry_8.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_8.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[8] <= ct_ifu_l0_btb_entry_8.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[8] <= ct_ifu_l0_btb_entry_8.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][8] <= _entry_targets_0_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][8] <= _entry_targets_1_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][8] <= _entry_targets_2_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][8] <= _entry_targets_3_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][8] <= _entry_targets_4_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][8] <= _entry_targets_5_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][8] <= _entry_targets_6_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][8] <= _entry_targets_7_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][8] <= _entry_targets_8_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][8] <= _entry_targets_9_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][8] <= _entry_targets_10_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][8] <= _entry_targets_11_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][8] <= _entry_targets_12_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][8] <= _entry_targets_13_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][8] <= _entry_targets_14_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][8] <= _entry_targets_15_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][8] <= _entry_targets_16_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][8] <= _entry_targets_17_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][8] <= _entry_targets_18_8_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_8_T = bits(ct_ifu_l0_btb_entry_8.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][8] <= _entry_targets_19_8_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_8.entry_update <= l0_btb_update_entry[8] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_8.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_8.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_8.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_8.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[8] <= ct_ifu_l0_btb_entry_8.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_8_T = bits(ct_ifu_l0_btb_entry_8.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[8] <= _entry_way_pred_1_8_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_8_T = bits(ct_ifu_l0_btb_entry_8.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[8] <= _entry_way_pred_2_8_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_8.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_64 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_8.forever_cpuclk <= _T_64 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_8.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_9.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_9.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_9.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_9.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_9.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[9] <= ct_ifu_l0_btb_entry_9.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_9.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[9] <= ct_ifu_l0_btb_entry_9.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[9] <= ct_ifu_l0_btb_entry_9.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][9] <= _entry_targets_0_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][9] <= _entry_targets_1_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][9] <= _entry_targets_2_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][9] <= _entry_targets_3_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][9] <= _entry_targets_4_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][9] <= _entry_targets_5_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][9] <= _entry_targets_6_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][9] <= _entry_targets_7_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][9] <= _entry_targets_8_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][9] <= _entry_targets_9_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][9] <= _entry_targets_10_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][9] <= _entry_targets_11_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][9] <= _entry_targets_12_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][9] <= _entry_targets_13_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][9] <= _entry_targets_14_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][9] <= _entry_targets_15_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][9] <= _entry_targets_16_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][9] <= _entry_targets_17_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][9] <= _entry_targets_18_9_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_9_T = bits(ct_ifu_l0_btb_entry_9.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][9] <= _entry_targets_19_9_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_9.entry_update <= l0_btb_update_entry[9] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_9.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_9.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_9.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_9.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[9] <= ct_ifu_l0_btb_entry_9.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_9_T = bits(ct_ifu_l0_btb_entry_9.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[9] <= _entry_way_pred_1_9_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_9_T = bits(ct_ifu_l0_btb_entry_9.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[9] <= _entry_way_pred_2_9_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_9.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_65 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_9.forever_cpuclk <= _T_65 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_9.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_10.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_10.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_10.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_10.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_10.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[10] <= ct_ifu_l0_btb_entry_10.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_10.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[10] <= ct_ifu_l0_btb_entry_10.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[10] <= ct_ifu_l0_btb_entry_10.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][10] <= _entry_targets_0_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][10] <= _entry_targets_1_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][10] <= _entry_targets_2_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][10] <= _entry_targets_3_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][10] <= _entry_targets_4_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][10] <= _entry_targets_5_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][10] <= _entry_targets_6_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][10] <= _entry_targets_7_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][10] <= _entry_targets_8_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][10] <= _entry_targets_9_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][10] <= _entry_targets_10_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][10] <= _entry_targets_11_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][10] <= _entry_targets_12_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][10] <= _entry_targets_13_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][10] <= _entry_targets_14_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][10] <= _entry_targets_15_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][10] <= _entry_targets_16_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][10] <= _entry_targets_17_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][10] <= _entry_targets_18_10_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_10_T = bits(ct_ifu_l0_btb_entry_10.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][10] <= _entry_targets_19_10_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_10.entry_update <= l0_btb_update_entry[10] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_10.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_10.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_10.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_10.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[10] <= ct_ifu_l0_btb_entry_10.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_10_T = bits(ct_ifu_l0_btb_entry_10.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[10] <= _entry_way_pred_1_10_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_10_T = bits(ct_ifu_l0_btb_entry_10.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[10] <= _entry_way_pred_2_10_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_10.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_66 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_10.forever_cpuclk <= _T_66 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_10.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_11.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_11.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_11.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_11.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_11.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[11] <= ct_ifu_l0_btb_entry_11.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_11.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[11] <= ct_ifu_l0_btb_entry_11.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[11] <= ct_ifu_l0_btb_entry_11.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][11] <= _entry_targets_0_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][11] <= _entry_targets_1_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][11] <= _entry_targets_2_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][11] <= _entry_targets_3_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][11] <= _entry_targets_4_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][11] <= _entry_targets_5_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][11] <= _entry_targets_6_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][11] <= _entry_targets_7_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][11] <= _entry_targets_8_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][11] <= _entry_targets_9_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][11] <= _entry_targets_10_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][11] <= _entry_targets_11_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][11] <= _entry_targets_12_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][11] <= _entry_targets_13_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][11] <= _entry_targets_14_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][11] <= _entry_targets_15_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][11] <= _entry_targets_16_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][11] <= _entry_targets_17_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][11] <= _entry_targets_18_11_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_11_T = bits(ct_ifu_l0_btb_entry_11.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][11] <= _entry_targets_19_11_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_11.entry_update <= l0_btb_update_entry[11] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_11.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_11.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_11.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_11.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[11] <= ct_ifu_l0_btb_entry_11.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_11_T = bits(ct_ifu_l0_btb_entry_11.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[11] <= _entry_way_pred_1_11_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_11_T = bits(ct_ifu_l0_btb_entry_11.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[11] <= _entry_way_pred_2_11_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_11.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_67 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_11.forever_cpuclk <= _T_67 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_11.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_12.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_12.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_12.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_12.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_12.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[12] <= ct_ifu_l0_btb_entry_12.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_12.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[12] <= ct_ifu_l0_btb_entry_12.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[12] <= ct_ifu_l0_btb_entry_12.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][12] <= _entry_targets_0_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][12] <= _entry_targets_1_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][12] <= _entry_targets_2_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][12] <= _entry_targets_3_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][12] <= _entry_targets_4_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][12] <= _entry_targets_5_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][12] <= _entry_targets_6_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][12] <= _entry_targets_7_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][12] <= _entry_targets_8_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][12] <= _entry_targets_9_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][12] <= _entry_targets_10_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][12] <= _entry_targets_11_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][12] <= _entry_targets_12_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][12] <= _entry_targets_13_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][12] <= _entry_targets_14_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][12] <= _entry_targets_15_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][12] <= _entry_targets_16_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][12] <= _entry_targets_17_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][12] <= _entry_targets_18_12_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_12_T = bits(ct_ifu_l0_btb_entry_12.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][12] <= _entry_targets_19_12_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_12.entry_update <= l0_btb_update_entry[12] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_12.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_12.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_12.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_12.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[12] <= ct_ifu_l0_btb_entry_12.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_12_T = bits(ct_ifu_l0_btb_entry_12.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[12] <= _entry_way_pred_1_12_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_12_T = bits(ct_ifu_l0_btb_entry_12.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[12] <= _entry_way_pred_2_12_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_12.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_68 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_12.forever_cpuclk <= _T_68 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_12.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_13.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_13.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_13.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_13.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_13.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[13] <= ct_ifu_l0_btb_entry_13.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_13.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[13] <= ct_ifu_l0_btb_entry_13.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[13] <= ct_ifu_l0_btb_entry_13.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][13] <= _entry_targets_0_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][13] <= _entry_targets_1_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][13] <= _entry_targets_2_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][13] <= _entry_targets_3_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][13] <= _entry_targets_4_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][13] <= _entry_targets_5_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][13] <= _entry_targets_6_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][13] <= _entry_targets_7_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][13] <= _entry_targets_8_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][13] <= _entry_targets_9_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][13] <= _entry_targets_10_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][13] <= _entry_targets_11_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][13] <= _entry_targets_12_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][13] <= _entry_targets_13_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][13] <= _entry_targets_14_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][13] <= _entry_targets_15_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][13] <= _entry_targets_16_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][13] <= _entry_targets_17_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][13] <= _entry_targets_18_13_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_13_T = bits(ct_ifu_l0_btb_entry_13.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][13] <= _entry_targets_19_13_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_13.entry_update <= l0_btb_update_entry[13] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_13.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_13.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_13.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_13.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[13] <= ct_ifu_l0_btb_entry_13.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_13_T = bits(ct_ifu_l0_btb_entry_13.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[13] <= _entry_way_pred_1_13_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_13_T = bits(ct_ifu_l0_btb_entry_13.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[13] <= _entry_way_pred_2_13_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_13.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_69 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_13.forever_cpuclk <= _T_69 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_13.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_14.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_14.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_14.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_14.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_14.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[14] <= ct_ifu_l0_btb_entry_14.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_14.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[14] <= ct_ifu_l0_btb_entry_14.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[14] <= ct_ifu_l0_btb_entry_14.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][14] <= _entry_targets_0_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][14] <= _entry_targets_1_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][14] <= _entry_targets_2_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][14] <= _entry_targets_3_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][14] <= _entry_targets_4_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][14] <= _entry_targets_5_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][14] <= _entry_targets_6_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][14] <= _entry_targets_7_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][14] <= _entry_targets_8_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][14] <= _entry_targets_9_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][14] <= _entry_targets_10_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][14] <= _entry_targets_11_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][14] <= _entry_targets_12_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][14] <= _entry_targets_13_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][14] <= _entry_targets_14_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][14] <= _entry_targets_15_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][14] <= _entry_targets_16_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][14] <= _entry_targets_17_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][14] <= _entry_targets_18_14_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_14_T = bits(ct_ifu_l0_btb_entry_14.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][14] <= _entry_targets_19_14_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_14.entry_update <= l0_btb_update_entry[14] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_14.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_14.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_14.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_14.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[14] <= ct_ifu_l0_btb_entry_14.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_14_T = bits(ct_ifu_l0_btb_entry_14.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[14] <= _entry_way_pred_1_14_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_14_T = bits(ct_ifu_l0_btb_entry_14.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[14] <= _entry_way_pred_2_14_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_14.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_70 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_14.forever_cpuclk <= _T_70 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_14.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    ct_ifu_l0_btb_entry_15.cp0_ifu_btb_en <= io.cp0_ifu_btb_en @[ct_ifu_l0_btb.scala 262:36]
+    ct_ifu_l0_btb_entry_15.cp0_ifu_icg_en <= io.cp0_ifu_icg_en @[ct_ifu_l0_btb.scala 263:36]
+    ct_ifu_l0_btb_entry_15.cp0_ifu_l0btb_en <= io.cp0_ifu_l0btb_en @[ct_ifu_l0_btb.scala 264:38]
+    ct_ifu_l0_btb_entry_15.cp0_yy_clk_en <= io.cp0_yy_clk_en @[ct_ifu_l0_btb.scala 265:35]
+    ct_ifu_l0_btb_entry_15.cpurst_b <= io.cpurst_b @[ct_ifu_l0_btb.scala 266:31]
+    entry_cnt[15] <= ct_ifu_l0_btb_entry_15.entry_cnt @[ct_ifu_l0_btb.scala 267:18]
+    ct_ifu_l0_btb_entry_15.entry_inv <= l0_btb_entry_inv @[ct_ifu_l0_btb.scala 268:31]
+    entry_ras[15] <= ct_ifu_l0_btb_entry_15.entry_ras @[ct_ifu_l0_btb.scala 269:18]
+    entry_tag[15] <= ct_ifu_l0_btb_entry_15.entry_tag @[ct_ifu_l0_btb.scala 270:18]
+    node _entry_targets_0_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 0, 0) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[0][15] <= _entry_targets_0_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_1_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 1, 1) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[1][15] <= _entry_targets_1_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_2_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 2, 2) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[2][15] <= _entry_targets_2_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_3_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 3, 3) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[3][15] <= _entry_targets_3_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_4_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 4, 4) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[4][15] <= _entry_targets_4_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_5_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 5, 5) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[5][15] <= _entry_targets_5_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_6_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 6, 6) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[6][15] <= _entry_targets_6_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_7_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 7, 7) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[7][15] <= _entry_targets_7_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_8_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 8, 8) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[8][15] <= _entry_targets_8_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_9_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 9, 9) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[9][15] <= _entry_targets_9_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_10_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 10, 10) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[10][15] <= _entry_targets_10_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_11_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 11, 11) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[11][15] <= _entry_targets_11_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_12_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 12, 12) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[12][15] <= _entry_targets_12_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_13_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 13, 13) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[13][15] <= _entry_targets_13_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_14_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 14, 14) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[14][15] <= _entry_targets_14_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_15_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 15, 15) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[15][15] <= _entry_targets_15_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_16_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 16, 16) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[16][15] <= _entry_targets_16_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_17_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 17, 17) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[17][15] <= _entry_targets_17_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_18_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 18, 18) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[18][15] <= _entry_targets_18_15_T @[ct_ifu_l0_btb.scala 273:28]
+    node _entry_targets_19_15_T = bits(ct_ifu_l0_btb_entry_15.entry_target, 19, 19) @[ct_ifu_l0_btb.scala 273:59]
+    entry_targets[19][15] <= _entry_targets_19_15_T @[ct_ifu_l0_btb.scala 273:28]
+    ct_ifu_l0_btb_entry_15.entry_update <= l0_btb_update_entry[15] @[ct_ifu_l0_btb.scala 275:34]
+    ct_ifu_l0_btb_entry_15.entry_update_cnt <= l0_btb_update_cnt_bit @[ct_ifu_l0_btb.scala 276:38]
+    ct_ifu_l0_btb_entry_15.entry_update_data <= l0_btb_update_data @[ct_ifu_l0_btb.scala 277:39]
+    ct_ifu_l0_btb_entry_15.entry_update_ras <= l0_btb_update_ras_bit @[ct_ifu_l0_btb.scala 278:38]
+    ct_ifu_l0_btb_entry_15.entry_update_vld <= l0_btb_update_vld_bit @[ct_ifu_l0_btb.scala 279:38]
+    entry_vld[15] <= ct_ifu_l0_btb_entry_15.entry_vld @[ct_ifu_l0_btb.scala 280:18]
+    node _entry_way_pred_1_15_T = bits(ct_ifu_l0_btb_entry_15.entry_way_pred, 0, 0) @[ct_ifu_l0_btb.scala 281:56]
+    entry_way_pred_1[15] <= _entry_way_pred_1_15_T @[ct_ifu_l0_btb.scala 281:24]
+    node _entry_way_pred_2_15_T = bits(ct_ifu_l0_btb_entry_15.entry_way_pred, 1, 1) @[ct_ifu_l0_btb.scala 282:56]
+    entry_way_pred_2[15] <= _entry_way_pred_2_15_T @[ct_ifu_l0_btb.scala 282:24]
+    ct_ifu_l0_btb_entry_15.entry_wen <= l0_btb_wen @[ct_ifu_l0_btb.scala 283:31]
+    node _T_71 = asClock(io.forever_cpuclk) @[ct_ifu_l0_btb.scala 284:57]
+    ct_ifu_l0_btb_entry_15.forever_cpuclk <= _T_71 @[ct_ifu_l0_btb.scala 284:36]
+    ct_ifu_l0_btb_entry_15.pad_yy_icg_scan_en <= io.pad_yy_icg_scan_en @[ct_ifu_l0_btb.scala 285:40]
+    io.l0_btb_ifctrl_chglfw_vld <= entry_chgflw_vld @[ct_ifu_l0_btb.scala 290:31]
+    io.l0_btb_ifctrl_chgflw_pc <= entry_hit_target @[ct_ifu_l0_btb.scala 291:31]
     node _io_l0_btb_ifctrl_chgflw_way_pred_T = cat(entry_hit_way_pred_2, entry_hit_way_pred_1) @[Cat.scala 31:58]
-    io.l0_btb_ifctrl_chgflw_way_pred <= _io_l0_btb_ifctrl_chgflw_way_pred_T @[ct_ifu_l0_btb.scala 293:36]
-    io.l0_btb_ifdp_chgflw_pc <= entry_hit_target @[ct_ifu_l0_btb.scala 294:28]
+    io.l0_btb_ifctrl_chgflw_way_pred <= _io_l0_btb_ifctrl_chgflw_way_pred_T @[ct_ifu_l0_btb.scala 292:36]
+    io.l0_btb_ifdp_chgflw_pc <= entry_hit_target @[ct_ifu_l0_btb.scala 293:28]
     node _io_l0_btb_ifdp_chgflw_way_pred_T = cat(entry_hit_way_pred_2, entry_hit_way_pred_1) @[Cat.scala 31:58]
-    io.l0_btb_ifdp_chgflw_way_pred <= _io_l0_btb_ifdp_chgflw_way_pred_T @[ct_ifu_l0_btb.scala 295:34]
-    io.l0_btb_ifdp_entry_hit <= entry_hit_flop @[ct_ifu_l0_btb.scala 296:28]
-    io.l0_btb_ifdp_hit <= entry_if_hit @[ct_ifu_l0_btb.scala 297:22]
-    io.l0_btb_ifdp_counter <= entry_hit_counter @[ct_ifu_l0_btb.scala 298:26]
-    io.l0_btb_ifdp_ras <= entry_hit_ras @[ct_ifu_l0_btb.scala 299:22]
-    io.l0_btb_debug_cur_state <= l0_btb_cur_state @[ct_ifu_l0_btb.scala 300:29]
+    io.l0_btb_ifdp_chgflw_way_pred <= _io_l0_btb_ifdp_chgflw_way_pred_T @[ct_ifu_l0_btb.scala 294:34]
+    io.l0_btb_ifdp_entry_hit <= entry_hit_flop @[ct_ifu_l0_btb.scala 295:28]
+    io.l0_btb_ifdp_hit <= entry_if_hit @[ct_ifu_l0_btb.scala 296:22]
+    io.l0_btb_ifdp_counter <= entry_hit_counter @[ct_ifu_l0_btb.scala 297:26]
+    io.l0_btb_ifdp_ras <= entry_hit_ras @[ct_ifu_l0_btb.scala 298:22]
+    io.l0_btb_debug_cur_state <= l0_btb_cur_state @[ct_ifu_l0_btb.scala 299:29]
 
